@@ -1,11 +1,22 @@
-import { Paper, Grid, Box, makeStyles, Container } from "@material-ui/core";
+import {
+  Paper,
+  Grid,
+  Box,
+  makeStyles,
+  Container,
+  Button,
+} from "@material-ui/core";
 import { memo, useState } from "react";
+import useDecimalToBinary from "../hooks/useDecimalToBinary";
 import MenuItems from "./MenuItems";
 
 const Lists = () => {
-  const [val, setVal] = useState({ item: 0 });
-  const [val2, setVal2] = useState({ item2: "" });
-  const [variables] = useState(["Binary", "decimal", "Octal", "Hexadecimal"]);
+  const [convertFrom, setConvertFrom] = useState({ item: 0 });
+  const [convertTo, setConvertTo] = useState({ item2: "" });
+  const [variables] = useState(["Binary", "Decimal", "Octal", "Hexadecimal"]);
+  const [textValue, setTextValue] = useState("");
+
+  const [reminder, conversion] = useDecimalToBinary(textValue);
 
   const handleChange =
     (setter, set = null) =>
@@ -15,6 +26,12 @@ const Lists = () => {
         [e.target.name]: e.target.value,
       });
     };
+  const handleLabelChange = (setter) => (e) => {
+    setter(e.target.value);
+  };
+  // useEffect(() => {
+  //   console.log("reminderLists", reminder);
+  // }, [reminder]);
 
   const useStyles = makeStyles((theme) => ({
     flexControl: {
@@ -42,10 +59,12 @@ const Lists = () => {
                 label="Convert From"
                 id="demo-simple-select"
                 name="item"
-                onChange={handleChange(setVal, val)}
-                value={val2.item}
+                onChange={handleChange(setConvertFrom, convertFrom)}
+                value={convertTo.item}
                 iterator={variables}
                 inputLabel="Conversion Number"
+                labelValue={textValue}
+                onLabelChange={handleLabelChange(setTextValue)}
               />
             </div>
           </Grid>
@@ -56,17 +75,23 @@ const Lists = () => {
                 label="Convert To"
                 id="demo-simple-select"
                 name="item2"
-                onChange={handleChange(setVal2, val2)}
-                value={val2.item}
-                iterator={variables.filter((va) => va !== val.item)}
-                disabled={val.item === 0 || val.item === ""}
+                onChange={handleChange(setConvertTo)}
+                value={convertTo.item}
+                iterator={variables.filter((va) => va !== convertFrom.item)}
+                disabled={convertFrom.item === 0 || convertFrom.item === ""}
                 readable={{
                   readOnly: true,
                 }}
                 inputLabel="Output"
+                labelValue={reminder}
               />
             </div>
           </Grid>
+        </Box>
+        <Box display="flex" justifyContent="center" p={2}>
+          <Button variant="contained" color="primary" onClick={conversion}>
+            Convert
+          </Button>
         </Box>
       </Container>
     </Paper>

@@ -25,7 +25,7 @@ const MenuItems = (props) => {
       },
     },
   }));
-  console.log(props.disabled);
+  // console.log(props.disabled);
   const classes = useStyles();
   return (
     // <Paper>
@@ -54,7 +54,8 @@ const MenuItems = (props) => {
         className={classes.muiMarginTop}
         id="standard-required"
         label={props.inputLabel}
-        defaultValue=""
+        value={props.labelValue}
+        onChange={props.onLabelChange}
       />
     </>
     // </Paper>
