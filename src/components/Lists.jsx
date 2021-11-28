@@ -6,17 +6,51 @@ import {
   Container,
   Button,
 } from "@material-ui/core";
-import { memo, useState } from "react";
-import useDecimalToBinary from "../hooks/useDecimalToBinary";
+import { memo, useState, useEffect } from "react";
 import MenuItems from "./MenuItems";
 
 const Lists = () => {
-  const [convertFrom, setConvertFrom] = useState({ item: 0 });
+  const [convertFrom, setConvertFrom] = useState({ item: "" });
   const [convertTo, setConvertTo] = useState({ item2: "" });
   const [variables] = useState(["Binary", "Decimal", "Octal", "Hexadecimal"]);
   const [textValue, setTextValue] = useState("");
+  const [err, setErr] = useState("");
+  const [ans, setAns] = useState("");
 
-  const [reminder, conversion] = useDecimalToBinary(textValue);
+  const switchBase = (convert) => {
+    let base
+    switch (convert) {
+      case "Binary":
+        base = 2;
+        break;
+      case "Octal":
+        base = 8;
+        break;
+      case "Decimal":
+        base = 10;
+        break;
+      case "Hexadecimal":
+        base = 16;
+        break;
+      default:
+        base=0;
+        break;
+    }
+    return base;
+  }
+  const conversion = () => {
+    let base1;
+    let base2;
+    base1 = switchBase(convertFrom.item)
+    console.log(base1);
+    const val = parseInt(textValue,base1)
+    if(!val) return setErr(`Entered number isn't in ${convertFrom.item} form. Please correct it.`)
+    else setErr("")
+    base2 = switchBase(convertTo.item2)
+    console.log(base2);
+
+    setAns(val.toString(base2))
+  }
 
   const handleChange =
     (setter, set = null) =>
@@ -29,16 +63,17 @@ const Lists = () => {
   const handleLabelChange = (setter) => (e) => {
     setter(e.target.value);
   };
-  // useEffect(() => {
-  //   console.log("reminderLists", reminder);
-  // }, [reminder]);
+
+  useEffect(()=> { 
+    if(err) alert(err); 
+    setErr(""); 
+  }, [err])
 
   const useStyles = makeStyles((theme) => ({
     flexControl: {
       [theme.breakpoints.down("xs")]: {
         display: "block",
       },
-      // background: "red",
     },
   }));
   const classes = useStyles();
@@ -60,7 +95,7 @@ const Lists = () => {
                 id="demo-simple-select"
                 name="item"
                 onChange={handleChange(setConvertFrom, convertFrom)}
-                value={convertTo.item}
+                value={convertFrom.item}
                 iterator={variables}
                 inputLabel="Conversion Number"
                 labelValue={textValue}
@@ -76,14 +111,14 @@ const Lists = () => {
                 id="demo-simple-select"
                 name="item2"
                 onChange={handleChange(setConvertTo)}
-                value={convertTo.item}
+                value={convertTo.item2}
                 iterator={variables.filter((va) => va !== convertFrom.item)}
                 disabled={convertFrom.item === 0 || convertFrom.item === ""}
                 readable={{
                   readOnly: true,
                 }}
                 inputLabel="Output"
-                labelValue={reminder}
+                labelValue={ans}
               />
             </div>
           </Grid>

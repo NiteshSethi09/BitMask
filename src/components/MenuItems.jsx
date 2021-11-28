@@ -4,7 +4,6 @@ import {
   InputLabel,
   FormControl,
   makeStyles,
-  Paper,
   TextField,
 } from "@material-ui/core";
 import { memo } from "react";
@@ -25,10 +24,8 @@ const MenuItems = (props) => {
       },
     },
   }));
-  // console.log(props.disabled);
   const classes = useStyles();
   return (
-    // <Paper>
     <>
       <FormControl className={classes.formControl} disabled={props.disabled}>
         <InputLabel id={props.labelId}>{props.label}</InputLabel>
@@ -39,7 +36,7 @@ const MenuItems = (props) => {
           name={props.name}
           onChange={props.onChange}
           value={props.value}
-          defaultValue={0}
+          defaultValue={props.value}
         >
           <MenuItem value={0}>Select</MenuItem>
           {props.iterator.map((va) => (
@@ -58,7 +55,6 @@ const MenuItems = (props) => {
         onChange={props.onLabelChange}
       />
     </>
-    // </Paper>
   );
 };
 
